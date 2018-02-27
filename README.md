@@ -6,7 +6,7 @@ Designed and developed mobile mashup. The application demonstrates a gathering o
 
 Open Weather Map uses authorisation key. For demonstration purposes I obtained a free key that provides basic weather data and limited amount of calls a day.
 
-![screenshot]raw.githubusercontent.com/username/projectname/branch/path/to/img.png)
+![screenshot]https://github.com/CBITT/mashup_app/blob/master/obt_key.png)
 
 ## Tools
 * JavaScript
@@ -18,4 +18,4 @@ Open Weather Map uses authorisation key. For demonstration purposes I obtained a
 
 ### Screenshots
 
-![screenshot]https://github.com/CBITT/mashup_app/edit/master/ui_sample.png)
+![screenshot]https://github.com/CBITT/mashup_app/blob/master/ui_sample.PNG)
