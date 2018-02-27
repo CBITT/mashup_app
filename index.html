@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>Irish Surf</title>
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<link rel="stylesheet" href="http://code.jquery.com/mobile/1.2.0/jquery.mobile-1.2.0.min.css" />
+		<script src="http://code.jquery.com/jquery-1.8.2.min.js"></script>
+		<script src="http://code.jquery.com/mobile/1.2.0/jquery.mobile-1.2.0.min.js"></script>
+		<script src="http://maps.google.com/maps/api/js?sensor=false"></script>
+
+		<style>
+			html {
+				height: 100%;
+			}
+			body {
+				height: 100%;
+				margin: 0;
+				padding: 0;
+			}
+			#map_canvas {
+
+				width: 100%;
+				height: 450px;
+			}
+
+			#footer {
+				position: fixed;
+				bottom: 0px;
+				width: 100%;
+			}
+			#footer a {
+				center: center;
+			}
+
+		</style>
+
+		<script type="text/javascript">
+			//API for maps
+
+			function initialize() {
+
+				var mapOptions = {
+					center : new google.maps.LatLng(54.516152, -10.042820),
+					zoom : 7,
+					mapTypeId : google.maps.MapTypeId.ROADMAP
+				};
+
+				var infoWindow = new google.maps.InfoWindow();
+				var map = new google.maps.Map(document.getElementById("map_canvas"), mapOptions);
+
+				$.getJSON('places.json', function(data) {
+					$.each(data.points, function(i, value) {
+
+						var letter = String.fromCharCode("A".charCodeAt(0) + i);
+
+						var myLatlng = new google.maps.LatLng(value.lat, value.lon);
+						var marker = new google.maps.Marker({
+							position : myLatlng,
+							map : map,
+							icon : 'http://chart.apis.google.com/chart?chst=d_map_pin_letter&chld=' + letter + '|0000ff|ffffff'
+						});
+
+						var beachNames = ['<h1>Falcarragh</h1><p>Co. Donegal </p>', '<h1>Barley Cove</h1><p>Co. Cork</p>', 
+						'<h1>Inch Strand</h1><p>Co. Kerry</p>', '<h1>Castlegregory</h1><p>Co. Kerry</p>', '<h1>Doonbeg</h1><p> Co. Clare</p>', 
+						'<h1>Keel</h1><p>Achill Island</p>', '<h1>Inishcrone</h1><p>Co. Sligo</p>', '<h1>Bundoran</h1><p>Co. Donegal</p>', 
+						'<h1>Dun Loughan</h1><p>Co. Galway</p>'];
+
+						marker.info = new google.maps.InfoWindow({
+							content : beachNames[i]
+						});
+
+						google.maps.event.addListener(marker, 'click', function() {
+							marker.info.open(map, marker);
+						});
+					});
+				});
+
+			}
+
+		</script>
+
+		<script>
+			// API for weather
+
+			$(document).ready(function() {
+				$('#select-native-1').click(function() {
+
+					$("select").change(function() {
+						var resultElement = $('#resultElement');
+						var target = $('select option:selected').val();
+						var urlString;
+						
+						if (target == "1") {
+							urlString = "http://api.openweathermap.org/data/2.5/weather?q=Falcarragh,IRL&APPID=5aefa33ac37708dcbb72fd4dcc484d3f&units=metric";
+						}
+						else if (target == "2") {
+							urlString = "http://api.openweathermap.org/data/2.5/weather?q=Bundoran,IRL&APPID=5aefa33ac37708dcbb72fd4dcc484d3f&units=metric";
+						}
+						else if (target == "3") {
+							urlString = "http://api.openweathermap.org/data/2.5/weather?q=Inishcrone,IRL&APPID=5aefa33ac37708dcbb72fd4dcc484d3f&units=metric";
+						}else if (target == "4") {
+							urlString = "http://api.openweathermap.org/data/2.5/weather?q=keen,IRL&APPID=5aefa33ac37708dcbb72fd4dcc484d3f&units=metric";
+						}
+						else if (target == "5") {
+							urlString = "http://api.openweathermap.org/data/2.5/weather?q=letterfranck,IRL&APPID=5aefa33ac37708dcbb72fd4dcc484d3f&units=metric";
+						}
+						else if (target == "6") {
+							urlString = "http://api.openweathermap.org/data/2.5/weather?q=Doonbeg,IRL&APPID=5aefa33ac37708dcbb72fd4dcc484d3f&units=metric";
+						}
+						else if (target == "7") {
+							urlString = "http://api.openweathermap.org/data/2.5/weather?q=Castlegregory,IRL&APPID=5aefa33ac37708dcbb72fd4dcc484d3f&units=metric";
+						}
+						else if (target == "8") {
+							urlString = "http://api.openweathermap.org/data/2.5/weather?q=dingle,IRL&APPID=5aefa33ac37708dcbb72fd4dcc484d3f&units=metric";
+						}
+						else if (target == "9") {
+							urlString = "http://api.openweathermap.org/data/2.5/weather?q=crookhaven,IRL&APPID=5aefa33ac37708dcbb72fd4dcc484d3f&units=metric";
+						}
+						
+						$.ajax({
+							url : urlString,
+							method : 'get',
+							dataType : 'json',
+							success : function(data) {
+								resultElement.html('<strong>Temperature:</strong> ' + data.main.temp + ' Celsius<br><br><strong>Weather: </strong>' +
+								 data.weather[0].main + '<br><br>' + '<strong>Discription:</strong> ' + 
+								data.weather[0].description + '<br><br><strong>Wind:</strong> ' + data.wind.speed + 
+								'km/h<br><br><strong>Sea Level: </strong>' +
+								 +data.main.sea_level +'m<br><br><strong>Humidity:</strong> ' + data.main.humidity + 
+								 '%<br><br>' + '<strong>Clouds: </strong>' + data.clouds.all + '%<br>');
+							}
+						}).change();
+
+					});
+				});
+			});
+
+		</script>
+
+	</head>
+	<body onload="initialize()">
+		
+		<!--facebook plugin-->
+		<div id="fb-root"></div>
+<script>(function(d, s, id) {
+  var js, fjs = d.getElementsByTagName(s)[0];
+  if (d.getElementById(id)) return;
+  js = d.createElement(s); js.id = id;
+  js.src = "//connect.facebook.net/en_US/sdk.js#xfbml=1&version=v2.6";
+  fjs.parentNode.insertBefore(js, fjs);
+}(document, 'script', 'facebook-jssdk'));</script>
+
+		<div data-role="page" data-theme="b" id="home">
+
+			<div data-role="header">
+				<h1>IRISH SURF</h1>
+			</div><!-- /header -->
+
+			<div data-role="content">
+				<a href="#surfspots" data-role="button" data-icon="arrow-r">Surf Spots Near Me</a>
+				<a href="#waves" data-role="button" data-icon="arrow-r">Check Weather</a>
+				<a href="#currentSurfers" data-role="button" data-icon="arrow-r" >Social Media</a>
+
+			</div><!-- /content -->
+			<div data-role="content">
+
+				<img src="startupLogo.gif" width="90%" />
+
+			</div>
+			<div data-role="footer" class="ui-bar" id="footer">
+				<a href="index.html" data-role="button" data-icon="home">Home</a>
+
+			</div>
+		</div><!-- /homepage -->
+
+		<!--surfspots-->
+		<div data-role="page" id="surfspots" data-theme="b">
+			<div data-role="header">
+				<h1>Surf spots</h1>
+			</div>
+
+			<div data-role="content">
+
+				<!--here comes the map-->
+
+				<div id="map_canvas"></div>
+
+				<!--end map-->
+				<!--<a href="#" data-role="button" data-icon="plus" data-theme="b">Beaches Near Me</a>  -->
+
+			</div>
+
+			<div data-role="footer" class="ui-bar" id="footer">
+				<a href="index.html" data-role="button" data-icon="home">Home</a>
+
+			</div>
+		</div><!--/surfspots-->
+
+		<!--Current Surfers-->
+		<div data-role="page" id="currentSurfers" data-theme="c">
+			<div data-role="header">
+				<h1>Social media</h1>
+			</div>
+
+			<div data-role="content">
+
+				<div class="fb-page" data-href="https://www.facebook.com/IrishSurfing/" data-tabs="timeline" data-width="300" data-height="450" data-small-header="false" data-adapt-container-width="true" data-hide-cover="false" data-show-facepile="true"><div class="fb-xfbml-parse-ignore"><blockquote cite="https://www.facebook.com/IrishSurfing/"><a href="https://www.facebook.com/IrishSurfing/">Irish Surfing</a></blockquote></div></div>
+			</div>
+
+			<div data-role="footer" class="ui-bar" id="footer">
+				<a href="index.html" data-role="button" data-icon="home">Home</a>
+
+			</div>
+		</div><!--/Current Surfers-->
+
+		<!--beaches with weather-->
+		<div data-role="page" id="waves" data-theme="b">
+			<div data-role="header">
+				<h1>Weather</h1>
+			</div>
+
+			<div data-role="content">
+
+				<form>
+					<div class="ui-field-contain">
+						<label for="select-native-1">Beaches:</label>
+						<select name="select-native-1" id="select-native-1">
+							<option value="1">Falcarragh, Co. Donegal</option>
+							<option value="2">Bundoran, Co. Donegal</option>
+							<option value="3">Inishcrone, Co. Sligo </option>
+							<option value="4">Keel, Achill Island</option>
+							<option value="5">Dun Loughan, Co. Galway</option>
+							<option value="6">Doonbeg, Co. Clare </option>
+							<option value="7">Castlegregory, Co. Kerry</option>
+							<option value="8">Inch Strand, Co. Kerry</option>
+							<option value="9">Barley Cove, Co. Cork </option>
+
+						</select>
+					</div>
+				</form>
+				<div id="resultElement"></div>
+
+			</div>
+
+			<div data-role="footer" class="ui-bar" id="footer">
+				<a href="index.html" data-role="button" data-icon="home">Home</a>
+
+			</div>
+		</div><!--/beaches with weather-->
+
+	</body>
+</html>
+
+<!--references
+https://developers.google.com/maps/documentation/javascript/examples/infowindow-simple
+http://biostall.com/adding-number-or-letters-to-google-maps-api-markers/    -- for marker popup vindow-->
+
